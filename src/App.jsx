@@ -19,9 +19,7 @@ const getRedirectUri = () => {
 };
 
 // Construir la URL de autorización usando la URI correcta
-const SPOTIFY_AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${import.meta.env.VITE_SPOTIFY_CLIENT_ID
-  }&redirect_uri=${encodeURIComponent(getRedirectUri())
-  }&response_type=token&scope=playlist-read-private%20playlist-read-collaborative`;
+const SPOTIFY_AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${import.meta.env.VITE_SPOTIFY_CLIENT_ID}&redirect_uri=${encodeURIComponent(getRedirectUri())}&response_type=token&scope=playlist-read-private%20playlist-read-collaborative`;
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('spotifyToken') || '')
