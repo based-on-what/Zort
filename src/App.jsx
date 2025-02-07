@@ -7,7 +7,21 @@ import Header from './components/Header'
 import Pagination from './components/Pagination'
 import './App.css'
 
-const SPOTIFY_AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${import.meta.env.VITE_SPOTIFY_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&response_type=token&scope=playlist-read-private%20playlist-read-collaborative`
+// Función para determinar la URI de redirección
+const getRedirectUri = () => {
+  // Verifica si estamos en desarrollo o producción
+  const isDevelopment = window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1';
+
+  return isDevelopment
+    ? 'http://localhost:5173/callback'
+    : 'https://tu-app.vercel.app/callback';
+};
+
+// Construir la URL de autorización usando la URI correcta
+const SPOTIFY_AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${import.meta.env.VITE_SPOTIFY_CLIENT_ID
+  }&redirect_uri=${encodeURIComponent(getRedirectUri())
+  }&response_type=token&scope=playlist-read-private%20playlist-read-collaborative`;
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('spotifyToken') || '')
