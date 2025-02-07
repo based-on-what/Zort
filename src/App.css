@@ -46,6 +46,11 @@ body {
   margin: 0;
   font-family: sans-serif;
   background-color: black;
+  color: white;
+}
+
+a {
+  color: inherit;
 }
 
 .container {

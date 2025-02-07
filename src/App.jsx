@@ -18,8 +18,18 @@ const getRedirectUri = () => {
     : 'https://zort-rho.vercel.app/callback';
 };
 
+function getScope() {
+  // Se agregan los scopes necesarios, separándolos con espacios.
+  const scopes = [
+    'user-read-private',
+    'playlist-read-private',
+    'playlist-read-collaborative'
+  ];
+  return scopes.join(' ');
+}
+
 // Construir la URL de autorización usando la URI correcta y forzando el diálogo
-const SPOTIFY_AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${import.meta.env.VITE_SPOTIFY_CLIENT_ID}&redirect_uri=${encodeURIComponent(getRedirectUri())}&response_type=token&scope=playlist-read-private%20playlist-read-collaborative&show_dialog=true`;
+const SPOTIFY_AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${import.meta.env.VITE_SPOTIFY_CLIENT_ID}&redirect_uri=${encodeURIComponent(getRedirectUri())}&response_type=token&scope=${encodeURIComponent(getScope())}&show_dialog=true`;
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('spotifyToken') || '')
