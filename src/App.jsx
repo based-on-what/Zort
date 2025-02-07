@@ -15,7 +15,7 @@ const getRedirectUri = () => {
 
   return isDevelopment
     ? 'http://localhost:5173/callback'
-    : 'https://tu-app.vercel.app/callback';
+    : 'https://zort-rho.vercel.app/callback';
 };
 
 // Construir la URL de autorización usando la URI correcta
