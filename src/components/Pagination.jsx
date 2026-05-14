@@ -1,29 +1,18 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './Pagination.css';
 
 function Pagination({ totalPages, currentPage, onPageChange }) {
-    const [showLeftPopover, setShowLeftPopover] = useState(false);
-    const [leftInput, setLeftInput] = useState("");
-    const [showRightPopover, setShowRightPopover] = useState(false);
-    const [rightInput, setRightInput] = useState("");
+    const [popover, setPopover] = useState(null) // 'left' | 'right' | null
+    const [popoverInput, setPopoverInput] = useState('')
 
-    const handleLeftGo = () => {
-        const pageNumber = parseInt(leftInput, 10);
+    const handleGo = () => {
+        const pageNumber = parseInt(popoverInput, 10)
         if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= totalPages) {
-            onPageChange(pageNumber - 1);
-            setShowLeftPopover(false);
-            setLeftInput("");
+            onPageChange(pageNumber - 1)
+            setPopover(null)
+            setPopoverInput('')
         }
-    };
-
-    const handleRightGo = () => {
-        const pageNumber = parseInt(rightInput, 10);
-        if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= totalPages) {
-            onPageChange(pageNumber - 1);
-            setShowRightPopover(false);
-            setRightInput("");
-        }
-    };
+    }
 
     const renderButton = (pageIndex) => (
         <button
@@ -33,95 +22,57 @@ function Pagination({ totalPages, currentPage, onPageChange }) {
         >
             {pageIndex + 1}
         </button>
-    );
+    )
 
-    const renderEllipsis = (isLeft) => {
-        return (
-            <div key={isLeft ? 'left-ellipsis' : 'right-ellipsis'} className="ellipsis-container">
-                <button
-                    className="ellipsis-button"
-                    onClick={() => {
-                        if (isLeft) {
-                            setShowLeftPopover(!showLeftPopover);
-                            setShowRightPopover(false);
-                        } else {
-                            setShowRightPopover(!showRightPopover);
-                            setShowLeftPopover(false);
-                        }
-                    }}
-                >
-                    ...
-                </button>
-                {isLeft && showLeftPopover && (
-                    <div className="popover">
-                        <input
-                            type="number"
-                            min="1"
-                            max={totalPages}
-                            value={leftInput}
-                            onChange={(e) => setLeftInput(e.target.value)}
-                            placeholder="Página"
-                        />
-                        <button onClick={handleLeftGo}>IR</button>
-                    </div>
-                )}
-                {!isLeft && showRightPopover && (
-                    <div className="popover">
-                        <input
-                            type="number"
-                            min="1"
-                            max={totalPages}
-                            value={rightInput}
-                            onChange={(e) => setRightInput(e.target.value)}
-                            placeholder="Página"
-                        />
-                        <button onClick={handleRightGo}>IR</button>
-                    </div>
-                )}
-            </div>
-        );
-    };
+    const renderEllipsis = (side) => (
+        <div key={`${side}-ellipsis`} className="ellipsis-container">
+            <button
+                className="ellipsis-button"
+                onClick={() => {
+                    setPopover(prev => prev === side ? null : side)
+                    setPopoverInput('')
+                }}
+            >
+                ...
+            </button>
+            {popover === side && (
+                <div className="popover">
+                    <input
+                        type="number"
+                        min="1"
+                        max={totalPages}
+                        value={popoverInput}
+                        onChange={e => setPopoverInput(e.target.value)}
+                        placeholder="Página"
+                    />
+                    <button onClick={handleGo}>IR</button>
+                </div>
+            )}
+        </div>
+    )
 
-    let pageButtons = [];
+    let pageButtons = []
 
     if (totalPages <= 10) {
         for (let i = 0; i < totalPages; i++) {
-            pageButtons.push(renderButton(i));
+            pageButtons.push(renderButton(i))
         }
     } else {
         if (currentPage < 3) {
-            for (let i = 0; i < 3; i++) {
-                pageButtons.push(renderButton(i));
-            }
-            pageButtons.push(renderEllipsis(false));
-            for (let i = totalPages - 3; i < totalPages; i++) {
-                pageButtons.push(renderButton(i));
-            }
+            for (let i = 0; i < 3; i++) pageButtons.push(renderButton(i))
+            pageButtons.push(renderEllipsis('right'))
+            for (let i = totalPages - 3; i < totalPages; i++) pageButtons.push(renderButton(i))
         } else if (currentPage >= totalPages - 3) {
-            for (let i = 0; i < 3; i++) {
-                pageButtons.push(renderButton(i));
-            }
-            pageButtons.push(renderEllipsis(true));
-            for (let i = totalPages - 3; i < totalPages; i++) {
-                pageButtons.push(renderButton(i));
-            }
+            for (let i = 0; i < 3; i++) pageButtons.push(renderButton(i))
+            pageButtons.push(renderEllipsis('left'))
+            for (let i = totalPages - 3; i < totalPages; i++) pageButtons.push(renderButton(i))
         } else {
-            for (let i = 0; i < 3; i++) {
-                pageButtons.push(renderButton(i));
-            }
-            pageButtons.push(renderEllipsis(true));
-            let start = currentPage - 1;
-            if (start < 3) {
-                start = 3;
-            }
-            const middleEnd = start + 3;
-            for (let i = start; i < middleEnd; i++) {
-                pageButtons.push(renderButton(i));
-            }
-            pageButtons.push(renderEllipsis(false));
-            for (let i = totalPages - 3; i < totalPages; i++) {
-                pageButtons.push(renderButton(i));
-            }
+            for (let i = 0; i < 3; i++) pageButtons.push(renderButton(i))
+            pageButtons.push(renderEllipsis('left'))
+            const start = Math.max(currentPage - 1, 3)
+            for (let i = start; i < start + 3; i++) pageButtons.push(renderButton(i))
+            pageButtons.push(renderEllipsis('right'))
+            for (let i = totalPages - 3; i < totalPages; i++) pageButtons.push(renderButton(i))
         }
     }
 
@@ -139,7 +90,7 @@ function Pagination({ totalPages, currentPage, onPageChange }) {
                 </button>
             )}
         </div>
-    );
+    )
 }
 
-export default Pagination; 
+export default Pagination
