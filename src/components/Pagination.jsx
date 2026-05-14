@@ -43,9 +43,9 @@ function Pagination({ totalPages, currentPage, onPageChange }) {
                         max={totalPages}
                         value={popoverInput}
                         onChange={e => setPopoverInput(e.target.value)}
-                        placeholder="Página"
+                        placeholder="Page"
                     />
-                    <button onClick={handleGo}>IR</button>
+                    <button onClick={handleGo}>GO</button>
                 </div>
             )}
         </div>

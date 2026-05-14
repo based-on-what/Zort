@@ -221,21 +221,21 @@ function App() {
                       setSortBy('tracks')
                       setCurrentPage(0)
                     }}>
-                      Ordenar por cantidad de canciones
+                      Sort by track count
                     </button>
                     <button onClick={handleDurationSort}>
-                      Ordenar por duración
+                      Sort by duration
                       {durationsLoading && ` (${durationsProgress.loaded}/${durationsProgress.total})`}
                     </button>
                     <button onClick={toggleSortOrder}>
-                      Cambiar orden ({sortAscending ? 'Ascendente' : 'Descendente'})
+                      Toggle order ({sortAscending ? 'Ascending' : 'Descending'})
                     </button>
                   </div>
 
                   <div className="search-container">
                     <input
                       type="text"
-                      placeholder="Buscar playlist..."
+                      placeholder="Search playlist..."
                       value={searchQuery}
                       onChange={(e) => {
                         setSearchQuery(e.target.value)
@@ -245,12 +245,12 @@ function App() {
                   </div>
 
                   <p className="current-order">
-                    <strong>Orden actual:</strong>{' '}
-                    {sortBy === 'tracks' ? 'Cantidad de canciones' : 'Duración'}{' '}
-                    — {sortAscending ? 'Ascendente' : 'Descendente'}
+                    <strong>Current order:</strong>{' '}
+                    {sortBy === 'tracks' ? 'Track count' : 'Duration'}{' '}
+                    — {sortAscending ? 'Ascending' : 'Descending'}
                     {durationsLoading && (
                       <span className="duration-progress">
-                        {' '}— Cargando duraciones: {durationsProgress.loaded}/{durationsProgress.total}
+                        {' '}— Loading durations: {durationsProgress.loaded}/{durationsProgress.total}
                       </span>
                     )}
                   </p>
@@ -271,7 +271,7 @@ function App() {
                             <img src={playlist.image} alt={playlist.name} />
                             <h3>{playlist.name}</h3>
                             {sortBy === 'tracks' && (
-                              <p>Canciones: {playlist.tracks}</p>
+                              <p>Tracks: {playlist.tracks}</p>
                             )}
                             {sortBy === 'duration' && (
                               <p>
@@ -295,7 +295,7 @@ function App() {
                 </>
               ) : (
                 <button onClick={handleLogin} className="login-button">
-                  Iniciar sesión con Spotify
+                  Log in with Spotify
                 </button>
               )}
             </div>
