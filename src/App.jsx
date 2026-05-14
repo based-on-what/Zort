@@ -6,6 +6,7 @@ import Loader from './components/Loader'
 import Header from './components/Header'
 import Pagination from './components/Pagination'
 import { formatDuration } from './utils/duration'
+import { generateCodeVerifier, generateCodeChallenge } from './utils/pkce'
 import './App.css'
 
 const REDIRECT_URI = 'https://zort-rho.vercel.app/callback'
@@ -16,7 +17,7 @@ const SCOPES = [
   'playlist-read-collaborative'
 ].join(' ')
 
-const SPOTIFY_AUTH_URL = `https://accounts.spotify.com/authorize?client_id=${import.meta.env.VITE_SPOTIFY_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${encodeURIComponent(SCOPES)}&show_dialog=true`
+const SPOTIFY_AUTH_BASE = `https://accounts.spotify.com/authorize?client_id=${import.meta.env.VITE_SPOTIFY_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=${encodeURIComponent(SCOPES)}&show_dialog=true`
 
 const ITEMS_PER_PAGE = 20
 
@@ -179,6 +180,13 @@ function App() {
 
   const durationsLoading = durationsFetchStarted && durationsProgress.loaded < durationsProgress.total
 
+  const handleLogin = async () => {
+    const verifier = generateCodeVerifier()
+    const challenge = await generateCodeChallenge(verifier)
+    localStorage.setItem('pkce_verifier', verifier)
+    window.location.href = `${SPOTIFY_AUTH_BASE}&code_challenge=${challenge}&code_challenge_method=S256`
+  }
+
   const handleLogout = () => {
     localStorage.removeItem('spotifyToken')
     durationsStartedRef.current = false
@@ -286,9 +294,9 @@ function App() {
                   )}
                 </>
               ) : (
-                <a href={SPOTIFY_AUTH_URL} className="login-button">
+                <button onClick={handleLogin} className="login-button">
                   Iniciar sesión con Spotify
-                </a>
+                </button>
               )}
             </div>
           </>
